@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trove_app/extras/app_colors.dart';
 import 'package:trove_app/extras/validators.dart';
+import 'package:trove_app/models/portfolio_position.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/services/firestore.dart';
 import 'package:trove_app/widgets/buttons.dart';
@@ -26,77 +27,86 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     // ScreenData().init(context);
 
-    return Consumer2<Auth, Firestore>(
+    return Consumer2<Auth, FirestoreNotifier>(
       builder: (context, auth, firestore, _) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      resizeToAvoidBottomInset: true,
-      key: _scaffoldKey,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 9.0.h,
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          resizeToAvoidBottomInset: true,
+          key: _scaffoldKey,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 9.0.h,
+                    ),
+
+                    WelcomeUser(
+                      boldText: 'Create Account',
+                      boldSubText: 'Sign up to get started!',
+                    ),
+
+                    SizedBox(
+                      height: 9.0.h,
+                    ),
+
+                    _buildSignUpForm(),
+
+                    SizedBox(
+                      height: 9.0.h,
+                    ),
+
+                    Button.plain(
+                      context: context,
+                      label: "Sign Up",
+                      gradientColors: [AppColors.pink, AppColors.lightOrange],
+                      useIcon: false,
+                      onPressed: () async {
+
+                        if (formKey.currentState.validate()) {
+                          formKey.currentState.save();
+
+                          //
+                          await auth.validateAndSignUp(
+                              formKey, _email, _password, _username);
+                              
+                              //
+                          if (auth.user.uid != null) {
+                            print("post user?");
+
+                            // writes user data to firestore
+                            firestore.addUserToDb(
+                                uid: auth.user.uid,
+                                email: _email,
+                                username: _username,
+                                time: DateTime.now());
+
+                            // writes default data to firestore for user
+                            firestore.addDefaultPortfolio(
+                                json: jsonPortfolio,
+                                collection: 'portfolio',
+                                document: 'document-${auth.user.uid}');
+                          }
+                        }
+                      },
+                    ),
+
+                    SizedBox(
+                      height: 5.0.h,
+                    ),
+
+                    _buildBottomText(),
+                    // SizedBox.expand()
+                  ],
                 ),
-
-                WelcomeUser(
-                  boldText: 'Create Account',
-                  boldSubText: 'Sign up to get started!',
-                ),
-
-                SizedBox(
-                  height: 9.0.h,
-                ),
-
-                _buildSignUpForm(),
-
-                SizedBox(
-                  height: 9.0.h,
-                ),
-
-                Button.plain(
-                  context: context,
-                  label: "Sign Up",
-                  gradientColors: [AppColors.pink, AppColors.lightOrange],
-                  useIcon: false,
-                  onPressed: () async {
-                    print("Test onPress");
-
-                    if (formKey.currentState.validate()) {
-                      formKey.currentState.save();
-
-                      await auth.validateAndSignUp(
-                          formKey, _email, _password, _username);
-
-                      if (auth.user.uid != null) {
-                        print("post user?");
-                        firestore.addUserToDb(
-                            uid: auth.user.uid,
-                            email: _email,
-                            username: _username,
-                            time: DateTime.now());
-                      }
-                    }
-                  },
-                ),
-
-                SizedBox(
-                  height: 5.0.h,
-                ),
-
-                _buildBottomText(),
-                // SizedBox.expand()
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        );
       },
     );
   }
@@ -140,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _goto() =>
-  //     // This updates Status to Unauthenticated so it can move to the LoginScreen
+      //     // This updates Status to Unauthenticated so it can move to the LoginScreen
       Provider.of<Auth>(context, listen: false)
           .updateStatus(Status.Unauthenticated);
 }

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:trove_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Firestore extends ChangeNotifier {
+class FirestoreNotifier extends ChangeNotifier {
   FirebaseFirestore _firebaseFirestore;
   // bool _useFirestoreEmulator = true;
   Query _query;
   UserModel _userModel = UserModel();
 
-  Firestore.instance(this._firebaseFirestore);
+  FirestoreNotifier.instance(this._firebaseFirestore);
 
   Future<void> addUserToDb({
     @required String uid,
@@ -37,5 +37,15 @@ class Firestore extends ChangeNotifier {
     // print(doc.data().toString());
     // return UserModel.getUser(doc.data());
     // return doc;
+  }
+
+  Future<void> addDefaultPortfolio({var json, String collection, String document}) async {
+    try {
+      await _firebaseFirestore.collection(collection).doc(document).set({
+        'defaultData': json,
+      });
+    } on FirebaseException catch (e) {
+      print(e);
+    }
   }
 }

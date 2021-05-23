@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           value: Auth.instance(FirebaseAuth.instance),
         ),
         ChangeNotifierProvider.value(
-          value: Firestore.instance(FirebaseFirestore.instance),
+          value: FirestoreNotifier.instance(FirebaseFirestore.instance),
         ),
       ],
       child: InitBuilders(),
