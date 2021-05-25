@@ -32,7 +32,7 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
-  @override
+
   Future<String> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -64,7 +64,6 @@ class Auth with ChangeNotifier {
   }
 
   // signInWithEmailAndPassword
-  @override
   Future<String> signInWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -89,7 +88,6 @@ class Auth with ChangeNotifier {
   }
 
   // signOut
-  @override
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
     updateStatus(Status.Unauthenticated);
@@ -119,7 +117,7 @@ class Auth with ChangeNotifier {
 
   // runs validateAndSave() and submits depending on formType
   // e.g if formType == FormType.login perform signInWithEmailAndPassword
-  Future<void> validateAndSubmit(
+  Future<void> validateAndLogin(
       GlobalKey<FormState> formKey, String email, String password) async {
     try {
       if (validateAndSave(formKey)) {

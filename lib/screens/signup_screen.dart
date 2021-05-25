@@ -113,7 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   _buildBottomText() {
     return Center(
-      child: BottomText(
+      child: AuthScreenBottomText(
         firstText: 'Already a member',
         secondText: 'Log in',
         onPressed: _goto,

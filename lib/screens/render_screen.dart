@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:trove_app/screens/home_screen.dart';
 import 'package:trove_app/screens/login_screen.dart';
 import 'package:trove_app/screens/signup_screen.dart';
 import 'package:trove_app/services/auth.dart';
@@ -37,16 +38,3 @@ class LoadingScreen extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}

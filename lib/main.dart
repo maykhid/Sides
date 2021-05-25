@@ -5,12 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:trove_app/screens/render_screen.dart';
-import 'package:trove_app/screens/signup_screen.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/services/firestore.dart';
-
-import 'screens/login_screen.dart';
-import 'widgets/ui_widgets.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,7 +73,7 @@ class RootMaterialWidget extends StatelessWidget {
       home: RenderScreen(),
       builder: (context, child) {
         return Scaffold(
-          drawer: AppDrawer(),
+          // drawer: AppDrawer(),
           body: child,
         );
       },

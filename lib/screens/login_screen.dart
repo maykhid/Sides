@@ -18,13 +18,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String _email;
   String _password;
-  // FormType _formType = FormType.login;
 
   @override
   Widget build(BuildContext context) {
-    // ScreenData().init(context);
 
-    // return Consumer<Auth>(builder: (context, auth, _) {
+    return Consumer<Auth>(builder: (context, auth, _) {
       return Scaffold(
         extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: true,
@@ -63,14 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     gradientColors: [AppColors.pink, AppColors.lightOrange],
                     useIcon: false,
                     onPressed: () {
-                      print("Test onPress");
-                      //TODO: Modularize the code below
+                      
+                      //
                       if (formKey.currentState.validate()) {
                         formKey.currentState.save();
                         // context
                         //     .read<Auth>()
                         //     .validateAndSubmit(formKey, _email, _password);
-                        // auth.validateAndSubmit(formKey, _email, _password);
+                        auth.validateAndLogin(formKey, _email, _password);
                       }
                     },
                   ),
@@ -88,12 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       );
-    // });
+    });
   }
 
   _buildBottomText() {
     return Center(
-      child: BottomText(
+      child: AuthScreenBottomText(
         firstText: 'New User',
         secondText: 'Sign up',
         // onPressed: () {
