@@ -32,7 +32,6 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
-
   Future<String> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -46,17 +45,19 @@ class Auth with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       updateStatus(Status.Unauthenticated);
       if (e.code == 'weak-password') {
-        return "The password provided is too weak.";
+        print("The password provided is too weak.");
       } else if (e.code == 'email-already-in-use') {
-        return "The account already exists for that email.";
+        print("The account already exists for that email.");
+      } else if (e.code == 'invalid-email') {
+        print("Email is invalid");
       } else {
-        return "Something Went Wrong.";
+        print("Something Went Wrong.");
       }
     }
   }
 
   /// Returns currentUser uid
-  
+
   currentUser() {
     _user = _firebaseAuth.currentUser;
     // notifyListeners();
@@ -84,6 +85,44 @@ class Auth with ChangeNotifier {
       } else {
         return "Something Went Wrong.";
       }
+    }
+  }
+
+  // change password
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _firebaseAuth.currentUser.updatePassword(newPassword);
+    } on FirebaseAuthException catch (e) {
+      print('updatePassword error: $e');
+    }
+  }
+
+  // reset password
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      //
+      if (e.code == 'auth/invalid-email') {
+        print("Email address not valid.");
+      } else if (e.code == 'auth/missing-android-pkg-name') {
+        print(
+            "An Android package name must be provided if the Android app is required to be installed.");
+      } else if (e.code == 'auth/user-not-found') {
+        print('This user does not exist');
+      } else {
+        print("Something Went Wrong.");
+      }
+    }
+  }
+
+  // confirm passwordReset
+  Future<void> confirmPasswordReset(String code, String newPassword) async {
+    try {
+      await _firebaseAuth.confirmPasswordReset(
+          code: code, newPassword: newPassword);
+    } on FirebaseAuthException catch (e) {
+      print('confirmPasswordReset error: $e');
     }
   }
 
