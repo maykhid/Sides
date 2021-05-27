@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
+import 'package:trove_app/screens/assets_screen.dart';
+import 'package:trove_app/screens/settings_screen.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/services/firestore.dart';
 import 'package:trove_app/widgets/dash_header.dart';
@@ -21,6 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
     var portfolio = await Provider.of<FirestoreNotifier>(context)
         .getPortfolioValue(auth.user.uid);
     print("Portfolio: $portfolio");
+
+    await Provider.of<FirestoreNotifier>(context, listen: false)
+        .getUserFromDb(uid: auth.user.uid);
+    // print("Portfolio: $data");
   }
 
   Map<String, double> dataMap = {
@@ -33,72 +39,118 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer2<Auth, FirestoreNotifier>(
-        builder: (context, auth, firestore, _) {
-      return FutureBuilder(
-          future: firestore.getPortfolioValue(auth.user.uid),
-          initialData: 0.00,
+      builder: (context, auth, firestore, _) {
+        return FutureBuilder(
+          // future: firestore.getPortfolioValue(auth.user.uid),""
+          future: Future.wait([
+            firestore.getPortfolioValue(auth.user.uid),
+            firestore.getUserFromDb(uid: auth.user.uid)
+          ]),
+          // initialData: 0.00,
           builder: (context, snapshot) {
-            return SingleChildScrollView(
-              child: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 2.5.w, right: 2.5.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //
-                      buildDashHeader(setOtherViews: true, headerText: 'Home'),
-                      //
-                      buildWelcomeUser(),
-                      //
-                      buildLineSeparator(),
-                      //
-                      PieChart(
-                        dataMap: dataMap,
-                        chartRadius: MediaQuery.of(context).size.width / 3.2,
-                      ),
-                      //
-                      Text(
-                        'Your Portfolio',
-                        style: TextStyle(
-                          fontSize: 2.5.h,
-                          fontWeight: FontWeight.bold,
+            return !snapshot.hasData ?
+                //
+                Center(child: CircularProgressIndicator()) :
+                //
+                SingleChildScrollView(
+                    child: SafeArea(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 2.5.w, right: 2.5.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            //
+                            buildDashHeader(
+                                setOtherViews: true,
+                                headerText: 'Home',
+                                pushScreen: SettingsScreen()),
+                            //
+                            buildWelcomeUser(
+                                boldText: 'Hi',
+                                boldSubText: snapshot.data[1].username),
+                            //
+                            buildLineSeparator(),
+                            //
+                            buildPieChart(context),
+                            //
+                            buildPortfolioText(),
+                            //
+
+                            buildPortfolioCard1(snapshot, context),
+                            //
+                            loansText(),
+                            //
+                            buildPortfolioCard2(),
+                          ],
                         ),
                       ),
-                      //
-                      PortfolioCard(
-                        assetImage: 'assets/images/texture.jpg',
-                        topText: 'Total Assets',
-                        centerText: snapshot.data.toString(),
-                        onTap: (){},
-                      ),
-                      //
-                      Text(
-                        'Loans',
-                        style: TextStyle(
-                          fontSize: 2.5.h,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      //
-                      PortfolioCard(
-                        assetImage: 'assets/images/purple_gradient.jpg',
-                        topText: 'Loan collected',
-                        centerText: '0.00',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          });
-    });
+                    ),
+                  );
+          },
+        );
+      },
+    );
+  }
+
+  PortfolioCard buildPortfolioCard2() {
+    return PortfolioCard(
+      assetImage: 'assets/images/purple_gradient.jpg',
+      topText: 'Loan collected',
+      centerText: '0.00',
+    );
+  }
+
+  Text loansText() {
+    return Text(
+      'Loans',
+      style: TextStyle(
+        fontSize: 2.5.h,
+        fontWeight: FontWeight.bold,
+        color: Colors.black.withOpacity(0.4),
+      ),
+    );
+  }
+
+  PortfolioCard buildPortfolioCard1(
+      AsyncSnapshot snapshot, BuildContext context) {
+    return PortfolioCard(
+      assetImage: 'assets/images/texture.jpg',
+      topText: 'Total Assets',
+      centerText: snapshot.data[0].toString(),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => AsssetsScreen(),
+          ),
+        );
+      },
+    );
+  }
+
+  Text buildPortfolioText() {
+    return Text(
+      'Your Portfolio',
+      style: TextStyle(
+        fontSize: 2.5.h,
+        fontWeight: FontWeight.bold,
+        color: Colors.black.withOpacity(0.4),
+      ),
+    );
+  }
+
+  PieChart buildPieChart(BuildContext context) {
+    return PieChart(
+      dataMap: dataMap,
+      chartRadius: MediaQuery.of(context).size.width / 3.2,
+    );
   }
 
   LineSeparator buildLineSeparator() => LineSeparator();
 
-  buildWelcomeUser() => WelcomeUser(
-        boldText: 'Hi',
-        boldSubText: 'Henry Ifebunandu',
+  buildWelcomeUser({String boldText, String boldSubText}) => WelcomeUser(
+        boldText: boldText,
+        boldSubText: boldSubText,
         fontSize: 40.0,
       );
 }
@@ -132,19 +184,17 @@ class PortfolioCard extends StatefulWidget {
 }
 
 class _PortfolioCardState extends State<PortfolioCard> {
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 2.0.h),
       //
       child: GestureDetector(
-        
         child: Container(
           height: 20.0.h,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: Colors.purpleAccent,
             // image: DecorationImage(
             //   fit: BoxFit.fill,
             //   image: AssetImage(widget.assetImage),
@@ -152,6 +202,13 @@ class _PortfolioCardState extends State<PortfolioCard> {
             borderRadius: BorderRadius.all(
               Radius.circular(10.0),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
           ),
 
           //

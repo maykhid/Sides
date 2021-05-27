@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trove_app/extras/app_colors.dart';
@@ -83,7 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 uid: auth.user.uid,
                                 email: _email,
                                 username: _username,
-                                time: DateTime.now());
+                                time: Timestamp.now());
 
                             // writes default data to firestore for user
                             firestore.addDefaultPortfolio(

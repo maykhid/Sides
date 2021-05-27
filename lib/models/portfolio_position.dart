@@ -4,7 +4,6 @@
 
 // import 'dart:js';
 
-
 var jsonPortfolio = [
   {
     "symbol": "AAPL",
@@ -62,9 +61,9 @@ class Portfolio {
   //     };
 
   String symbol;
-  double totalQuantity;
-  int equityValue;
-  int pricePerShare;
+  var totalQuantity;
+  var equityValue;
+  var pricePerShare;
 
   Portfolio({
     this.equityValue,
@@ -74,8 +73,13 @@ class Portfolio {
   });
 
   Portfolio.fromMap(Map<dynamic, dynamic> data)
-      : symbol = data["symbol"],
-        totalQuantity = data["totalQuantity"],
-        equityValue = data["equityValue"],
-        pricePerShare = data["pricePerShare"];
+      : symbol = data["symbol"] ?? "",
+        totalQuantity = data["totalQuantity"] ?? "",
+        equityValue = data["equityValue"] ?? "",
+        pricePerShare = data["pricePerShare"] ?? "";
+
+  @override
+  String toString() {
+    return '{ ${this.equityValue}, ${this.pricePerShare}, ${this.symbol}, ${this.totalQuantity} }';
+  }
 }

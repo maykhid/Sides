@@ -3,9 +3,10 @@ import 'package:trove_app/screens/settings_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class DashHeader extends StatelessWidget {
-  DashHeader({this.setOtherViews = false, this.headerText});
+  DashHeader({this.setOtherViews = false, this.headerText, this.pushScreen});
   final bool setOtherViews;
   final String headerText;
+  final Widget pushScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class DashHeader extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  SettingsScreen(),
+                                  pushScreen,
                             ),
                           );
                         },
@@ -44,7 +45,7 @@ class DashHeader extends StatelessWidget {
                     ],
                   ),
                 )
-                //
+              //
               : Container(),
         ],
       ),
@@ -52,8 +53,9 @@ class DashHeader extends StatelessWidget {
   }
 }
 
-buildDashHeader({bool setOtherViews, @required String headerText}) =>
+buildDashHeader({bool setOtherViews, @required String headerText, Widget pushScreen}) =>
     DashHeader(
       setOtherViews: setOtherViews,
       headerText: headerText,
+      pushScreen: pushScreen,
     );
