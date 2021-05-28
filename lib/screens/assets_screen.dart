@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trove_app/models/portfolio_position.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/services/firestore.dart';
 import 'package:trove_app/widgets/dash_header.dart';
@@ -84,17 +83,25 @@ class ListContainer extends StatelessWidget {
       //
       child: Center(
         child: ListTile(
-          title: Text(snapshot.data[index].symbol),
+          title: Text(
+            snapshot.data[index].symbol,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
           subtitle: Text(
             '\$ ${formatString(snapshot.data[index].equityValue.toStringAsFixed(0))}',
             style: TextStyle(
               fontSize: 20.0.sp,
               fontWeight: FontWeight.w700,
+              color: Colors.white,
             ),
           ),
           trailing: Icon(
             Icons.arrow_forward_rounded,
             size: 10.0.sp,
+            color: Colors.white,
           ),
         ),
       ),
@@ -103,6 +110,6 @@ class ListContainer extends StatelessWidget {
 }
 
 formatString(value) {
-return value.replaceAllMapped(
-          new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+  return value.replaceAllMapped(
+      new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
 }

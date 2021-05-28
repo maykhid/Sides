@@ -30,3 +30,21 @@ class PasswordFieldValidator {
     return null;
   }
 }
+
+class LoanValidator {
+  // double maximumAmount;
+
+  // LoanValidator(this.maximumAmount);
+
+  static String validate(int loanAmount, int maximumAmount) {
+    try {
+      //
+      if (loanAmount > maximumAmount)
+        return 'Your loan cannot be more than \$' '$maximumAmount';
+      //
+      return null;
+    } catch (e) {
+      return "Loan amount cannot be empty";
+    }
+  }
+}

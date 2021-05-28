@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trove_app/models/portfolio_position.dart';
+import 'package:trove_app/extras/essentials.dart';
 import 'package:trove_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -7,6 +7,7 @@ class FirestoreNotifier extends ChangeNotifier {
   FirebaseFirestore _firebaseFirestore;
   // bool _useFirestoreEmulator = true;
   UserModel _userModel = UserModel();
+  EssentialFunctions _essentialFunctions = EssentialFunctions();
 
   FirestoreNotifier.instance(this._firebaseFirestore);
 
@@ -29,21 +30,14 @@ class FirestoreNotifier extends ChangeNotifier {
   }
 
   Future<UserModel> getUserFromDb({@required String uid}) async {
+    try {
+      var data = await _firebaseFirestore.collection('users').doc(uid).get();
+      print(data.data());
 
-    try{
-    var data = await _firebaseFirestore.collection('users').doc(uid).get();
-    print(data.data());
-
-    return UserModel.getUserDetails(data.data());
-
-    } on FirebaseException catch (e){
+      return UserModel.getUserDetails(data.data());
+    } on FirebaseException catch (e) {
       print(e);
     }
-    
-    // .map((snap) => UserModel.getUser(snap.data()));
-    // print(doc.data().toString());
-    // return UserModel.getUser(doc.data());
-    // return doc;
   }
 
   Future<void> addDefaultPortfolio(
@@ -67,46 +61,11 @@ class FirestoreNotifier extends ChangeNotifier {
           .get();
       print('User portfolio: ${data.data()}');
       // return portfolioFromJson(data.data()['defaultData']);
-      return convertMapToList(data.data()['defaultData']);
+      return _essentialFunctions.convertMapToList(data.data()['defaultData']);
     } on FirebaseException catch (e) {
       print(e);
     }
     // return sna
-  }
-
-  // Stream<List<Portfolio>> get portfolioData {
-  //   return _firebaseFirestore
-  //       .collection('portfolio')
-  //       .snapshots()
-  //       .map(portfolio);
-  // }
-
-  // List<Portfolio> portfolio(QuerySnapshot snapshot) {
-  //   snapshot.docs.map((doc) {
-  //     List<Portfolio> newList = [];
-  //     List<dynamic> portfolioMap = doc.data()['defaultData'];
-  //     portfolioMap.forEach((element) {
-  //       newList.add(
-  //         Portfolio(
-  //           equityValue: element['equityValue'],
-  //           totalQuantity: element['totalQuantity'],
-  //           pricePerShare: element['pricePerShare'],
-  //           symbol: element['symbol'],
-  //         ),
-  //       );
-  //     });
-  //     return newList;
-  //   });
-  // }
-
-  convertMapToList(List data) {
-    var list = [];
-    for (var i = 0; i < data.length; i++) {
-      Map<dynamic, dynamic> currentElement = data[i];
-      // currentElement.forEach((key, value) => list.add())
-      list.add(Portfolio.fromMap(currentElement));
-    }
-    return list;
   }
 
   Future getPortfolioValue(String uid) async {
@@ -128,11 +87,27 @@ class FirestoreNotifier extends ChangeNotifier {
 
       print('Sum equity: $value');
 
-      String valueString = value.toString();
+      return value.toInt().toString();
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+  }
 
-      // returns an amount with comma
-      return valueString.replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+  Future acquireLoan({
+    String collection,
+    String document,
+    var amount,
+    var duration,
+    var paid,
+  }) async {
+    try {
+      await _firebaseFirestore.collection(collection).doc(document).set({
+        'loanData': {
+          "amount": amount,
+          "paid": paid,
+          "duration": duration,
+        },
+      });
     } on FirebaseException catch (e) {
       print(e);
     }

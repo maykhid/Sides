@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trove_app/screens/settings_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class DashHeader extends StatelessWidget {
@@ -34,8 +33,7 @@ class DashHeader extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  pushScreen,
+                              builder: (BuildContext context) => pushScreen,
                             ),
                           );
                         },
@@ -53,7 +51,8 @@ class DashHeader extends StatelessWidget {
   }
 }
 
-buildDashHeader({bool setOtherViews, @required String headerText, Widget pushScreen}) =>
+buildDashHeader(
+        {bool setOtherViews, @required String headerText, Widget pushScreen}) =>
     DashHeader(
       setOtherViews: setOtherViews,
       headerText: headerText,

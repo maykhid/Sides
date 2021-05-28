@@ -80,17 +80,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             print("post user?");
 
                             // writes user data to firestore
-                            firestore.addUserToDb(
+                            await firestore.addUserToDb(
                                 uid: auth.user.uid,
                                 email: _email,
                                 username: _username,
                                 time: Timestamp.now());
 
                             // writes default data to firestore for user
-                            firestore.addDefaultPortfolio(
+                            await firestore.addDefaultPortfolio(
                                 json: jsonPortfolio,
                                 collection: 'portfolio',
-                                document: 'document-${auth.user.uid}');
+                                document: 'document${auth.user.uid}');
                           }
                         }
                       },

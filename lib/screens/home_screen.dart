@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
+import 'package:trove_app/extras/essentials.dart';
 import 'package:trove_app/screens/assets_screen.dart';
 import 'package:trove_app/screens/settings_screen.dart';
 import 'package:trove_app/services/auth.dart';
@@ -8,6 +9,8 @@ import 'package:trove_app/services/firestore.dart';
 import 'package:trove_app/widgets/dash_header.dart';
 import 'package:trove_app/widgets/ui_widgets.dart';
 import 'package:sizer/sizer.dart';
+
+import 'loan_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -36,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // "Ionic": 2,
   };
 
+  EssentialFunctions essentialFunctions = EssentialFunctions();
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<Auth, FirestoreNotifier>(
@@ -48,9 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ]),
           // initialData: 0.00,
           builder: (context, snapshot) {
-            return !snapshot.hasData ?
+            return !snapshot.hasData
+                ?
                 //
-                Center(child: CircularProgressIndicator()) :
+                Center(child: CircularProgressIndicator())
+                :
                 //
                 SingleChildScrollView(
                     child: SafeArea(
@@ -97,6 +104,14 @@ class _HomeScreenState extends State<HomeScreen> {
       assetImage: 'assets/images/purple_gradient.jpg',
       topText: 'Loan collected',
       centerText: '0.00',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => LoanScreen(),
+          ),
+        );
+      },
     );
   }
 
@@ -116,7 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return PortfolioCard(
       assetImage: 'assets/images/texture.jpg',
       topText: 'Total Assets',
-      centerText: snapshot.data[0].toString(),
+      //TODO: remove this provider
+      centerText: essentialFunctions.formatToStringComma(snapshot.data[0]),
       onTap: () {
         Navigator.push(
           context,

@@ -21,7 +21,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Container(
               child: Column(
                 children: [
-                  ListTile(title: Text('Change Password'),)
+                  ListTile(title: Text('Change Username'),),
+                  ListTile(title: Text('Change Password'),),
+                  // ListTile(title: Text('Change Password'),),
                 ],
               ),
             )
