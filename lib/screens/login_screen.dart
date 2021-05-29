@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     label: "Login",
                     gradientColors: [AppColors.pink, AppColors.lightOrange],
                     useIcon: false,
-                    onPressed: () {
+                    onPressed: () async {
                       
                       //
                       if (formKey.currentState.validate()) {
@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // context
                         //     .read<Auth>()
                         //     .validateAndSubmit(formKey, _email, _password);
-                        auth.validateAndLogin(formKey, _email, _password);
+                        await auth.validateAndLogin(formKey, _email, _password);
                       }
                     },
                   ),
