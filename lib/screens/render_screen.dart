@@ -6,6 +6,7 @@ import 'package:trove_app/screens/signup_screen.dart';
 import 'package:trove_app/services/auth.dart';
 
 class RenderScreen extends StatelessWidget {
+  static String route = 'RenderScreen';
   @override
   Widget build(BuildContext context) {
     return Consumer<Auth>(

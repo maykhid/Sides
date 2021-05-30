@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:trove_app/extras/essentials.dart';
+import 'package:trove_app/models/loan_model.dart';
 import 'package:trove_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreNotifier extends ChangeNotifier {
-  FirebaseFirestore _firebaseFirestore;
   // bool _useFirestoreEmulator = true;
   UserModel _userModel = UserModel();
   EssentialFunctions _essentialFunctions = EssentialFunctions();
+  bool _inProgress = false;
+  String _message = '';
+
+  FirebaseFirestore _firebaseFirestore;
 
   FirestoreNotifier.instance(this._firebaseFirestore);
 
+  bool get inProgress => _inProgress;
+  String get message => _message;
+
+  /// Adds user details to database
   Future<void> addUserToDb({
     @required String uid,
     @required String email,
@@ -29,6 +37,7 @@ class FirestoreNotifier extends ChangeNotifier {
     }
   }
 
+  /// Gets user details
   Future<UserModel> getUserFromDb({@required String uid}) async {
     try {
       var data = await _firebaseFirestore.collection('users').doc(uid).get();
@@ -40,6 +49,7 @@ class FirestoreNotifier extends ChangeNotifier {
     }
   }
 
+  /// Adds dummy data for user
   Future<void> addDefaultPortfolio(
       {var json, String collection, String document}) async {
     try {
@@ -51,7 +61,7 @@ class FirestoreNotifier extends ChangeNotifier {
     }
   }
 
-  ///get list of all portfolio
+  /// Get list of portfolio
   Future getUserPortfolio(String uid) async {
     ///TODO: change document string path to ['document-$uid']
     try {
@@ -68,6 +78,7 @@ class FirestoreNotifier extends ChangeNotifier {
     // return sna
   }
 
+  /// Get total portfolio value
   Future getPortfolioValue(String uid) async {
     try {
       var data = await _firebaseFirestore
@@ -93,23 +104,67 @@ class FirestoreNotifier extends ChangeNotifier {
     }
   }
 
+  /// Gets a loan for user
   Future acquireLoan({
-    String collection,
+    // String collection,
     String document,
     var amount,
     var duration,
     var paid,
   }) async {
     try {
-      await _firebaseFirestore.collection(collection).doc(document).set({
-        'loanData': {
-          "amount": amount,
-          "paid": paid,
-          "duration": duration,
-        },
-      });
+      updateStatus('Loading...', true);
+      await _firebaseFirestore
+          .collection('loans')
+          .doc(document)
+          .set({
+            'loanData': {
+              "amount": amount,
+              "paid": paid,
+              "duration": duration,
+            },
+          })
+          .timeout(Duration(seconds: 20), onTimeout: () {
+            throw Exception('Time out. Check connection');
+          })
+          .then((value) => updateStatus('Success', false))
+          .onError((error, stackTrace) => updateStatus('$error', false));
+      // .);
+      // ;
+    } on FirebaseException catch (e) {
+      updateStatus('$e', false);
+      print(e);
+    }
+  }
+
+  /// Get user loan data
+  Stream<Loan> userLoanStream(String uid, String document) {
+    try {
+      return _firebaseFirestore
+          .collection('loans')
+          .doc(document)
+          .snapshots()
+          .map((snap) => Loan.fromMap(snap.data()));
+    } on FirebaseException catch (e) {}
+  }
+
+  Future<Loan> userLoanFuture(String uid) async {
+    try {
+      var loansData =
+          await _firebaseFirestore.collection('loans').doc('loansDoc$uid').get();
+      // .snapshots()
+      // .map((snap) => Loan.fromMap(snap.data()));
+      return Loan.fromMap(loansData.data()['loanData']);
     } on FirebaseException catch (e) {
       print(e);
     }
+  }
+
+  /// updates message and inProgress
+  updateStatus(String message, bool inProgress) {
+    _inProgress = inProgress;
+    _message = message;
+    notifyListeners();
+    print('Message: $_message, inProgress: $_inProgress');
   }
 }

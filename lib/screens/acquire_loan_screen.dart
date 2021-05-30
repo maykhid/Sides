@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:trove_app/extras/essentials.dart';
+import 'package:trove_app/extras/test_snack.dart';
 import 'package:trove_app/extras/validators.dart';
+import 'package:trove_app/screens/home_screen.dart';
+import 'package:trove_app/screens/render_screen.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/services/firestore.dart';
 import 'package:trove_app/widgets/buttons.dart';
@@ -10,6 +13,7 @@ import 'package:trove_app/widgets/dash_header.dart';
 import 'package:sizer/sizer.dart';
 
 class AcquireLoanScreen extends StatefulWidget {
+  static String route = 'aquireScreen';
   @override
   _AcquireLoanScreenState createState() => _AcquireLoanScreenState();
 }
@@ -40,6 +44,7 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
                   headerText: 'Get Loan',
                 ),
 
+                //
                 Form(
                   key: formKey,
                   child: Container(
@@ -59,17 +64,21 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
                           useGradient: false,
                           buttonColor: Colors.black,
                           useIcon: false,
+                          showLoading: firestore.inProgress,
                           onPressed: () async {
                             if (formKey.currentState.validate()) {
                               formKey.currentState.save();
 
                               await firestore.acquireLoan(
-                                collection: 'loans',
+                                // collection: 'loans',
                                 document: 'loansDoc${auth.user.uid}',
                                 amount: int.parse(_loanAmount),
                                 paid: false,
                                 duration: _chosenDuration,
                               );
+
+                              if (!firestore.inProgress)
+                                GlobalSnackBar.show(context, firestore.message, );
                             }
                           },
                         ),
@@ -137,7 +146,6 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
   }
 
   Container buildLoanField() {
-    
     //
     return Container(
       width: double.infinity,

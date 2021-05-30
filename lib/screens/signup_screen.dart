@@ -67,15 +67,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       gradientColors: [AppColors.pink, AppColors.lightOrange],
                       useIcon: false,
                       onPressed: () async {
-
                         if (formKey.currentState.validate()) {
                           formKey.currentState.save();
 
                           //
                           await auth.validateAndSignUp(
                               formKey, _email, _password, _username);
-                              
-                              //
+
+                          //
                           if (auth.user.uid != null) {
                             print("post user?");
 
@@ -91,6 +90,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 json: jsonPortfolio,
                                 collection: 'portfolio',
                                 document: 'document${auth.user.uid}');
+
+                            // writes a value-less loan
+                            await firestore.acquireLoan(
+                              document: 'loansDoc${auth.user.uid}',
+                              amount: 0.00,
+                              paid: true,
+                              duration: '',
+                            );
                           }
                         }
                       },

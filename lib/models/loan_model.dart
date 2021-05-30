@@ -17,7 +17,7 @@ class Loan {
 
   Loan.fromMap(Map<dynamic, dynamic> data)
       : amount = data["amount"] ?? "",
-        paid = data["paid"] ?? "",
+        paid = data["paid"] ?? false,
         duration = data["duration"] ?? "";
 
   @override

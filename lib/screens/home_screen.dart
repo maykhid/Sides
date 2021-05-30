@@ -13,6 +13,7 @@ import 'package:sizer/sizer.dart';
 import 'loan_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  static String route = 'HOmeScreen';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     "AAPL": 2500,
     "TSLA": 3000,
     "AMZN": 4500,
-    // "Ionic": 2,
+    // "Ionic": 200,
   };
 
   EssentialFunctions essentialFunctions = EssentialFunctions();
@@ -49,7 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
           // future: firestore.getPortfolioValue(auth.user.uid),""
           future: Future.wait([
             firestore.getPortfolioValue(auth.user.uid),
-            firestore.getUserFromDb(uid: auth.user.uid)
+            firestore.getUserFromDb(uid: auth.user.uid),
+            firestore.userLoanFuture(auth.user.uid),
           ]),
           // initialData: 0.00,
           builder: (context, snapshot) {
@@ -70,7 +72,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             buildDashHeader(
                                 setOtherViews: true,
                                 headerText: 'Home',
-                                pushScreen: SettingsScreen()),
+                                pushScreen: SettingsScreen(),
+                                snapshot: snapshot,),
                             //
                             buildWelcomeUser(
                                 boldText: 'Hi',
@@ -87,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             //
                             loansText(),
                             //
-                            buildPortfolioCard2(),
+                            buildPortfolioCard2(snapshot, context),
                           ],
                         ),
                       ),
@@ -99,11 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  PortfolioCard buildPortfolioCard2() {
+  PortfolioCard buildPortfolioCard2(snapshot, context) {
     return PortfolioCard(
       assetImage: 'assets/images/purple_gradient.jpg',
       topText: 'Loan collected',
-      centerText: '0.00',
+      centerText: essentialFunctions.formatToStringComma(snapshot.data[2].amount.toString()),
       onTap: () {
         Navigator.push(
           context,
@@ -210,7 +213,7 @@ class _PortfolioCardState extends State<PortfolioCard> {
           height: 20.0.h,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.purpleAccent,
+            color: Colors.black,
             // image: DecorationImage(
             //   fit: BoxFit.fill,
             //   image: AssetImage(widget.assetImage),

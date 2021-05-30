@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:trove_app/screens/acquire_loan_screen.dart';
 import 'package:trove_app/screens/render_screen.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/services/firestore.dart';
@@ -71,6 +72,10 @@ class RootMaterialWidget extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       // home: RenderScreen(),
       home: RenderScreen(),
+      routes: {
+        RenderScreen.route: (context) => RenderScreen(),
+        AcquireLoanScreen.route : (context) => AcquireLoanScreen(),
+      },
       builder: (context, child) {
         return Scaffold(
           // drawer: AppDrawer(),

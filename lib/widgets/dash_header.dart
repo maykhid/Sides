@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 class DashHeader extends StatelessWidget {
-  DashHeader({this.setOtherViews = false, this.headerText, this.pushScreen});
+  DashHeader({this.setOtherViews = false, this.headerText, this.pushScreen, this.snapshot});
   final bool setOtherViews;
   final String headerText;
   final Widget pushScreen;
+  final snapshot;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class DashHeader extends StatelessWidget {
                         },
                       ),
                       //
-                      CircleAvatar(),
+                      CircleAvatar(child: Text(snapshot.data[1].username.toString()[0]),),
                     ],
                   ),
                 )
@@ -52,9 +53,10 @@ class DashHeader extends StatelessWidget {
 }
 
 buildDashHeader(
-        {bool setOtherViews, @required String headerText, Widget pushScreen}) =>
+        {bool setOtherViews, @required String headerText, Widget pushScreen, snapshot}) =>
     DashHeader(
       setOtherViews: setOtherViews,
       headerText: headerText,
       pushScreen: pushScreen,
+      snapshot: snapshot,
     );

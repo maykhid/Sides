@@ -14,6 +14,8 @@ class Auth with ChangeNotifier {
   final FirebaseAuth _firebaseAuth;
   User _user;
   Status _status = Status.Unininitialized;
+  bool _inProgress = false;
+  String _message = '';
   // Firestrore store;
 
   Auth.instance(this._firebaseAuth) {
@@ -23,6 +25,8 @@ class Auth with ChangeNotifier {
 
   Status get status => _status;
   User get user => _user;
+  bool get inProgress => _inProgress;
+  String get message => _message;
 
   /// This function is to be called on cases where
   /// updating status is needed
@@ -126,10 +130,18 @@ class Auth with ChangeNotifier {
     }
   }
 
-  // signOut
+  /// signOut
   Future<void> signOut() async {
-    await _firebaseAuth.signOut();
-    updateStatus(Status.Unauthenticated);
+    updateStatus(Status.Authenticating);
+    try {
+      await _firebaseAuth.signOut();
+      updateStatus(Status.Unauthenticated);
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      updateStatus(Status.Authenticated);
+    }
+
+    
   }
 
   Future<void> onAuthStateChanged(User user) async {
