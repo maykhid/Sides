@@ -57,6 +57,7 @@ class Auth with ChangeNotifier {
       } else {
         print("Something Went Wrong.");
       }
+      return "Something Went Wrong.";
     }
   }
 
