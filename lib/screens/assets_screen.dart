@@ -16,44 +16,48 @@ class _AsssetsScreenState extends State<AsssetsScreen> {
     var auth = Provider.of<Auth>(context);
 
     return SafeArea(
-        child: Padding(
-      padding: EdgeInsets.only(left: 2.5.w, right: 2.5.w),
-      child: Column(
-        children: [
-          //
-          buildDashHeader(setOtherViews: false, headerText: 'Assets'),
-          //
-          FutureBuilder(
-              future: Provider.of<FirestoreNotifier>(context)
-                  .getUserPortfolio(auth.user.uid),
-              builder: (context, snapshot) {
-                //
-                if (snapshot.connectionState == ConnectionState.waiting ||
-                    snapshot.data == null) {
-                  return Center(
-                    child: Container(
-                      height: 50.0,
-                      width: 50.0,
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-                //
-                return ListView.separated(
-                  itemCount: snapshot.data.length,
-                  shrinkWrap: true,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      Divider(),
-                  itemBuilder: (context, index) {
-                    //
-                    return ListContainer(index: index, snapshot: snapshot);
-                  },
-                );
-              }),
-        ],
+      child: Padding(
+        padding: EdgeInsets.only(left: 2.5.w, right: 2.5.w),
+        child: Column(
+          children: [
+            //
+            buildDashHeader(setOtherViews: false, headerText: 'Assets'),
+            //
+            FutureBuilder(
+                future: Provider.of<FirestoreNotifier>(context)
+                    .getUserPortfolio(auth.user.uid),
+                builder: (context, snapshot) {
+                  //
+                  if (snapshot.connectionState == ConnectionState.waiting ||
+                      snapshot.data == null) {
+                    return Center(
+                      child: Container(
+                        height: 50.0,
+                        width: 50.0,
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  //
+                  return buildListView(snapshot);
+                }),
+          ],
+        ),
       ),
-    ));
+    );
   }
+}
+
+ListView buildListView(AsyncSnapshot snapshot) {
+  return ListView.separated(
+    itemCount: snapshot.data.length,
+    shrinkWrap: true,
+    separatorBuilder: (BuildContext context, int index) => Divider(),
+    itemBuilder: (context, index) {
+      //
+      return ListContainer(index: index, snapshot: snapshot);
+    },
+  );
 }
 
 class ListContainer extends StatelessWidget {
@@ -65,7 +69,7 @@ class ListContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 10.0.h,
+      height: 13.0.h,
       decoration: BoxDecoration(
         color: Colors.amber,
         borderRadius: BorderRadius.all(
@@ -90,6 +94,7 @@ class ListContainer extends StatelessWidget {
               color: Colors.white,
             ),
           ),
+          //
           subtitle: Text(
             '\$ ${formatString(snapshot.data[index].equityValue.toStringAsFixed(0))}',
             style: TextStyle(

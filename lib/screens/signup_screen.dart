@@ -137,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           children: [
             TextInputField(
               labelText: 'Full Name',
-              validator: Username.validate,
+              validator: UsernameFieldValidator.validate,
               onSaved: (String value) => _username = value,
             ),
             TextInputField(

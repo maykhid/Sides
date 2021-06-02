@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trove_app/extras/app_colors.dart';
+import 'package:sizer/sizer.dart';
 
 class WelcomeUser extends StatelessWidget {
   final String boldText;
@@ -10,7 +11,7 @@ class WelcomeUser extends StatelessWidget {
   WelcomeUser({
     @required this.boldText,
     @required this.boldSubText,
-    this.fontSize = 30.0,
+    this.fontSize = 25.0,
   });
 
   @override
@@ -25,7 +26,7 @@ class WelcomeUser extends StatelessWidget {
             '$boldText,',
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 40.0,
+              fontSize: 24.0.sp,
               fontFamily: 'OpenSans',
               fontWeight: FontWeight.w600,
             ),

@@ -25,7 +25,7 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   var _loanAmount;
   EssentialFunctions _essentialFunctions = EssentialFunctions();
-  String _maximumAmount;
+  String _totalAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,10 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
                               );
 
                               if (!firestore.inProgress)
-                                GlobalSnackBar.show(context, firestore.message, );
+                                GlobalSnackBar.show(
+                                  context,
+                                  firestore.message,
+                                );
                             }
                           },
                         ),
@@ -127,7 +130,7 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
           }).toList(),
           //
           hint: Text(
-            "Please select preferred duration to return loan",
+            "Please select preferred duration ",
             style: TextStyle(
                 color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
           ),
@@ -162,7 +165,7 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
       //
       child: TextFormField(
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(left: 5.0.w),
+          contentPadding: EdgeInsets.only(left: 2.0.w),
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
           // enabledBorder: InputBorder.none,
@@ -170,17 +173,19 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
           // disabledBorder: InputBorder.none,
           hintText: "Enter amount ",
         ),
+
         onChanged: (_) async {
           final check = await getFutureInt();
-          setState(() => _maximumAmount = check);
+          setState(() => _totalAmount = check);
         },
+
         validator: (number) {
           //
           final digitOnly = int.tryParse(number);
           //
           // String total = getFutureInt().toString();
           //
-          int sixtyPercentOf = _essentialFunctions.sixtyPercent(_maximumAmount);
+          int sixtyPercentOf = _essentialFunctions.sixtyPercent(_totalAmount);
           //
           return LoanValidator.validate(digitOnly, sixtyPercentOf);
         },
@@ -191,7 +196,8 @@ class _AcquireLoanScreenState extends State<AcquireLoanScreen> {
     );
   }
 
-  //
+  // since a validator does not take in an async function
+  // use the fuction below to prepare the result of getPortfoliovalue()
   getFutureInt() async {
     var providerAuth = Provider.of<Auth>(context, listen: false);
     var value = await Provider.of<FirestoreNotifier>(context, listen: false)

@@ -150,11 +150,31 @@ class FirestoreNotifier extends ChangeNotifier {
 
   Future<Loan> userLoanFuture(String uid) async {
     try {
-      var loansData =
-          await _firebaseFirestore.collection('loans').doc('loansDoc$uid').get();
+      var loansData = await _firebaseFirestore
+          .collection('loans')
+          .doc('loansDoc$uid')
+          .get();
       // .snapshots()
       // .map((snap) => Loan.fromMap(snap.data()));
       return Loan.fromMap(loansData.data()['loanData']);
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+  }
+
+  Future updateUsername(String newUsername, String uid) async {
+    try {
+      updateStatus('Loading...', true);
+      await _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .update({"username": newUsername}).whenComplete(() async {
+        print("completed");
+        updateStatus('Successful', false);
+      }).catchError((e) {
+        updateStatus('Write failed: $e', false);
+        print(e);
+      });
     } on FirebaseException catch (e) {
       print(e);
     }

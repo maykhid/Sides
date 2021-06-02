@@ -85,10 +85,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             //
                             buildPortfolioText(),
                             //
-
+                            buildLineSeparator(),
+                            //
                             buildPortfolioCard1(snapshot, context),
                             //
                             loansText(),
+                            //
+                            buildLineSeparator(),
                             //
                             buildPortfolioCard2(snapshot, context),
                           ],
@@ -122,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Text(
       'Loans',
       style: TextStyle(
-        fontSize: 2.5.h,
+        fontSize: 10.5.sp,
         fontWeight: FontWeight.bold,
         color: Colors.black.withOpacity(0.4),
       ),
@@ -151,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Text(
       'Your Portfolio',
       style: TextStyle(
-        fontSize: 2.5.h,
+        fontSize: 10.5.sp,
         fontWeight: FontWeight.bold,
         color: Colors.black.withOpacity(0.4),
       ),
@@ -170,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
   buildWelcomeUser({String boldText, String boldSubText}) => WelcomeUser(
         boldText: boldText,
         boldSubText: boldSubText,
-        fontSize: 40.0,
+        fontSize: 24.0.sp,
       );
 }
 
@@ -244,20 +247,20 @@ class _PortfolioCardState extends State<PortfolioCard> {
                     widget.topText,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 2.5.h,
+                      fontSize: 10.0.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   //
                   SizedBox(
-                    height: 15.0.h,
+                    height: 13.0.h,
                     child: Center(
                       child: Text(
                         '\$' + widget.centerText,
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 10.0.h,
-                            fontWeight: FontWeight.bold),
+                            fontSize: 30.0.sp,
+                            fontWeight: FontWeight.bold,),
                       ),
                     ),
                   ),

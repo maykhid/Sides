@@ -43,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   WelcomeUser(
                     boldText: 'Welcome',
                     boldSubText: 'Sign in to continue!',
+                    fontSize: 23.0.sp,
                   ),
 
                   SizedBox(

@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:trove_app/screens/acquire_loan_screen.dart';
 import 'package:trove_app/screens/render_screen.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/services/firestore.dart';
+import 'package:trove_app/services/paystack_payment.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +21,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final PaystackPlugin _paystackPlugin = PaystackPlugin();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -28,6 +31,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: FirestoreNotifier.instance(FirebaseFirestore.instance),
+        ),
+        ChangeNotifierProvider.value(
+          value: PayStackNotifier.initialize(_paystackPlugin),
         ),
       ],
       child: InitBuilders(),

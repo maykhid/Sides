@@ -95,7 +95,12 @@ class Auth with ChangeNotifier {
   // change password
   Future<void> updatePassword(String newPassword) async {
     try {
-      await _firebaseAuth.currentUser.updatePassword(newPassword);
+      await _firebaseAuth.currentUser
+          .updatePassword(newPassword)
+          .whenComplete(() {
+        print('Success');
+      }).catchError((e) => print(e));
+      //
     } on FirebaseAuthException catch (e) {
       print('updatePassword error: $e');
     }
@@ -140,8 +145,6 @@ class Auth with ChangeNotifier {
       print(e);
       updateStatus(Status.Authenticated);
     }
-
-    
   }
 
   Future<void> onAuthStateChanged(User user) async {

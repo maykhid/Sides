@@ -12,18 +12,19 @@ class DashHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 10.0.h,
+      // color: Colors.black,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           //
           Text(
             headerText,
-            style: TextStyle(fontSize: 2.5.h, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 10.5.sp, fontWeight: FontWeight.bold),
           ),
           //
           setOtherViews
               ? Container(
-                  width: 20.0.w,
+                  // width: 20.0.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

@@ -17,6 +17,7 @@ class EssentialFunctions {
     return list;
   }
 
+  /// Determine sixty percent of [amount]
   int sixtyPercent(String amount) {
     try{
       int newAmount = (int.parse(amount) * 0.6).toInt();

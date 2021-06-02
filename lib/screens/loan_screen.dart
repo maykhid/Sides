@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:trove_app/extras/essentials.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/services/firestore.dart';
+import 'package:trove_app/services/paystack_payment.dart';
 import 'package:trove_app/widgets/buttons.dart';
 import 'package:trove_app/widgets/dash_header.dart';
 import 'package:sizer/sizer.dart';
@@ -21,9 +22,9 @@ class _LoanScreenState extends State<LoanScreen> {
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(left: 2.5.w, right: 2.5.w),
-          child: Consumer2<Auth, FirestoreNotifier>(
+          child: Consumer3<Auth, FirestoreNotifier, PayStackNotifier>(
               // stream: null,
-              builder: (context, auth, firestore, _) {
+              builder: (context, auth, firestore, paystack, _) {
             return FutureBuilder(
                 future: firestore.userLoanFuture(auth.user.uid),
                 initialData: false,
@@ -91,9 +92,42 @@ class _LoanScreenState extends State<LoanScreen> {
                                   ),
                                 ),
                                 //
-                                SizedBox(height: 25.0.h,),
+                                SizedBox(
+                                  height: 25.0.h,
+                                ),
                                 //
-                                Button.rounded(buttonText: 'Pay Now'),
+                                Button.rounded(
+                                    buttonText: 'Pay Now',
+                                    onPressed: () async {
+                                      //
+                                      var user =
+                                          await Provider.of<FirestoreNotifier>(
+                                                  context,
+                                                  listen: false)
+                                              .getUserFromDb(
+                                        uid: auth.user.uid,
+                                      );
+                                      //
+                                      bool verify = await paystack.checkOut(
+                                        context: context,
+                                        amount: snapshot.data.amount * 100,
+                                        email: user.email,
+                                        ref:
+                                            '${auth.user.uid}${DateTime.now()}',
+                                      );
+                                      //
+                                      if (verify) {
+                                        // write to db that user has paid
+                                        await firestore.acquireLoan(
+                                          // collection: 'loans',
+                                          document: 'loansDoc${auth.user.uid}',
+                                          amount: 0.00,
+                                          paid: verify,
+                                          duration: '',
+                                        );
+                                        Navigator.pop(context);
+                                      }
+                                    }),
                               ],
                             ),
                           ],
@@ -161,7 +195,7 @@ class GetLoanWidget extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          height: 8.0.h,
+          height: 10.0.h,
           decoration: BoxDecoration(
             color: Colors.amber,
             borderRadius: BorderRadius.all(

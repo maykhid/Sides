@@ -12,7 +12,7 @@ class EmailFieldValidator {
   }
 }
 
-class Username {
+class UsernameFieldValidator {
   static String validate(String username) {
     if (username.indexOf(' ') >= 0) return 'Username contains space';
     return username.isEmpty ? 'Username can\'t be empty' : null;
