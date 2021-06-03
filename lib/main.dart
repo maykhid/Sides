@@ -130,11 +130,11 @@ class _RootMaterialWidgetState extends State<RootMaterialWidget> {
         _messangerKey.currentState.removeCurrentSnackBar();
         _messangerKey.currentState.showSnackBar(
             GlobalSnackBar.showNetworkSnackbar(
-                'Check your internet connection', Colors.red, 50000));
+                'Check your internet connection', Colors.redAccent, 50000));
       } else {
         _messangerKey.currentState.removeCurrentSnackBar();
         _messangerKey.currentState.showSnackBar(
-            GlobalSnackBar.showNetworkSnackbar('Online', Colors.blueAccent, 5));
+            GlobalSnackBar.showNetworkSnackbar('Online', Colors.greenAccent, 5));
       }
     });
   }
