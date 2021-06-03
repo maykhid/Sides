@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trove_app/extras/app_colors.dart';
+import 'package:trove_app/widgets/snacks.dart';
 import 'package:trove_app/extras/validators.dart';
 import 'package:trove_app/services/auth.dart';
 import 'package:trove_app/widgets/buttons.dart';
@@ -20,8 +20,20 @@ class _LoginScreenState extends State<LoginScreen> {
   String _password;
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    var auth = Provider.of<Auth>(context);
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!auth.inProgress && auth.message.isNotEmpty) {
+      GlobalSnackBar.showAuthSnackbar(context, auth.message, Colors.red, 10);
+    }
+    });
+    
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Consumer<Auth>(builder: (context, auth, _) {
       return Scaffold(
         extendBodyBehindAppBar: true,
@@ -35,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-
                   SizedBox(
                     height: 9.0.h,
                   ),
@@ -59,10 +70,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   Button.plain(
                     context: context,
                     label: "Login",
-                    gradientColors: [AppColors.pink, AppColors.lightOrange],
+                    gradientColors: [Colors.black, Colors.black54],
                     useIcon: false,
                     onPressed: () async {
-                      
                       //
                       if (formKey.currentState.validate()) {
                         formKey.currentState.save();
@@ -78,7 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 9.0.h,
                   ),
 
-                  
                   _buildBottomText(),
                   // SizedBox.expand()
                 ],

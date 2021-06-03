@@ -126,7 +126,7 @@ class _AuthScreenBottomTextState extends State<AuthScreenBottomText> {
             style: TextStyle(color: Colors.black38),
             children: [
               TextSpan(
-                  text: '${widget.secondText} ->',
+                  text: '${widget.secondText}',
                   style: TextStyle(color: AppColors.pink),
                   recognizer: _tapRecognizer),
             ]),

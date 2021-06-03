@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:trove_app/extras/test_snack.dart';
+import 'package:trove_app/widgets/snacks.dart';
 import 'package:trove_app/screens/acquire_loan_screen.dart';
 import 'package:trove_app/screens/render_screen.dart';
 import 'package:trove_app/services/auth.dart';

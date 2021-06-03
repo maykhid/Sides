@@ -36,10 +36,19 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
+  updateLoadingState(String message, bool inProgress) {
+    _inProgress = inProgress;
+    _message = message;
+    notifyListeners();
+  }
+
   Future<String> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
+      //
       updateStatus(Status.Authenticating);
+      //
+      updateLoadingState('Loading...', true);
       print(
           'This is the status #on createUserWithEmailAndPassword -> ${_status.toString()}');
       await _firebaseAuth.createUserWithEmailAndPassword(
@@ -49,14 +58,24 @@ class Auth with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       updateStatus(Status.Unauthenticated);
       if (e.code == 'weak-password') {
+        // display error for snack
+        updateLoadingState(e.code, false);
         print("The password provided is too weak.");
       } else if (e.code == 'email-already-in-use') {
+        // display error for snack
+        updateLoadingState(e.code, false);
         print("The account already exists for that email.");
       } else if (e.code == 'invalid-email') {
+        // display error for snack
+        updateLoadingState(e.code, false);
         print("Email is invalid");
       } else {
+        // display error for snack
+        updateLoadingState(e.code, false);
         print("Something Went Wrong.");
       }
+      // display error for snack
+      updateLoadingState("Somethiing went wrong", false);
       return "Something Went Wrong.";
     }
   }
@@ -74,20 +93,29 @@ class Auth with ChangeNotifier {
       String email, String password) async {
     try {
       updateStatus(Status.Authenticating);
+      updateLoadingState('Loading...', true);
       print(
           'This is the status #on signInWithPassword -> ${_status.toString()}');
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+      //
+      updateLoadingState('Successful', false);
       return currentUser();
     } on FirebaseAuthException catch (e) {
       updateStatus(Status.Unauthenticated);
       print(
           'This is the status #on signInWithPassword -> ${_status.toString()}');
       if (e.code == 'user-not-found') {
+        //// display error for snack
+        updateLoadingState(e.code, false);
         return "No user found for that email.";
       } else if (e.code == 'wrong-password') {
+        //// display error for snack
+        updateLoadingState(e.code, false);
         return "Wrong password provided for that user.";
       } else {
+        //// display error for snack
+        updateLoadingState('Something went wrong.', false);
         return "Something Went Wrong.";
       }
     }

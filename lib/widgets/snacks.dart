@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trove_app/screens/acquire_loan_screen.dart';
 
 class GlobalSnackBar {
   final String message;
@@ -8,13 +7,14 @@ class GlobalSnackBar {
     @required this.message,
   });
 
-  static show(BuildContext context, String message, {String route}) {
+  static show(BuildContext context, String message,
+      {String route, int duration = 50000}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         elevation: 0.0,
         //behavior: SnackBarBehavior.floating,
         content: Text(message),
-        duration: new Duration(seconds: 5000000),
+        duration: new Duration(seconds: duration),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
@@ -25,6 +25,7 @@ class GlobalSnackBar {
           label: 'OK',
           onPressed: () =>
               Navigator.of(context).popUntil((route) => route.isFirst),
+          // Navigator.of(context).pop(),
         ),
       ),
     );
@@ -40,6 +41,25 @@ class GlobalSnackBar {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+      ),
+    );
+  }
+
+  static showAuthSnackbar(context, message, Color color, int seconds) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        elevation: 0.0,
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        content: Text(message),
+        duration: new Duration(seconds: seconds),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16.0),
+              topRight: Radius.circular(16.0),
+              bottomLeft: Radius.circular(16.0),
+              bottomRight: Radius.circular(16.0)),
+        ),
       ),
     );
   }

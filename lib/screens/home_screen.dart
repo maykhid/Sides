@@ -137,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return PortfolioCard(
       assetImage: 'assets/images/texture.jpg',
       topText: 'Total Assets',
-      //TODO: remove this provider
+      
       centerText: essentialFunctions.formatToStringComma(snapshot.data[0]),
       onTap: () {
         Navigator.push(
@@ -165,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return PieChart(
       dataMap: dataMap,
       chartRadius: MediaQuery.of(context).size.width / 3.2,
+      colorList: [Colors.black, Colors.grey, Colors.blueGrey],
     );
   }
 

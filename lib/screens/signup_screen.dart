@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:trove_app/extras/app_colors.dart';
+import 'package:trove_app/widgets/snacks.dart';
 import 'package:trove_app/extras/validators.dart';
 import 'package:trove_app/models/portfolio_position.dart';
 import 'package:trove_app/services/auth.dart';
@@ -23,6 +23,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _password;
   String _username;
   // FormType _formType = FormType.register;
+
+  @override
+  void didChangeDependencies() {
+    var auth = Provider.of<Auth>(context);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!auth.inProgress && auth.message.isNotEmpty) {
+      GlobalSnackBar.showAuthSnackbar(context, auth.message, Colors.red, 10);
+    }
+    });
+    
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Button.plain(
                       context: context,
                       label: "Sign Up",
-                      gradientColors: [AppColors.pink, AppColors.lightOrange],
+                      gradientColors: [Colors.black, Colors.black54],
                       useIcon: false,
                       onPressed: () async {
                         if (formKey.currentState.validate()) {

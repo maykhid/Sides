@@ -41,7 +41,7 @@ class DashHeader extends StatelessWidget {
                         },
                       ),
                       //
-                      CircleAvatar(child: Text(snapshot.data[1].username.toString()[0]),),
+                      CircleAvatar(child: Text(snapshot.data[1].username.toString()[0]),backgroundColor: Colors.blueGrey,),
                     ],
                   ),
                 )

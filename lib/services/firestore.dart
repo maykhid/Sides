@@ -38,6 +38,7 @@ class FirestoreNotifier extends ChangeNotifier {
   }
 
   /// Gets user details
+  // ignore: missing_return
   Future<UserModel> getUserFromDb({@required String uid}) async {
     try {
       var data = await _firebaseFirestore.collection('users').doc(uid).get();
@@ -63,7 +64,7 @@ class FirestoreNotifier extends ChangeNotifier {
 
   /// Get list of portfolio
   Future getUserPortfolio(String uid) async {
-    ///TODO: change document string path to ['document-$uid']
+    ///
     try {
       var data = await _firebaseFirestore
           .collection('portfolio')
@@ -138,16 +139,18 @@ class FirestoreNotifier extends ChangeNotifier {
   }
 
   /// Get user loan data
-  Stream<Loan> userLoanStream(String uid, String document) {
-    try {
-      return _firebaseFirestore
-          .collection('loans')
-          .doc(document)
-          .snapshots()
-          .map((snap) => Loan.fromMap(snap.data()));
-    } on FirebaseException catch (e) {}
-  }
+  // ignore: missing_return
+  // Stream<Loan> userLoanStream(String uid, String document) {
+  //   try {
+  //     return _firebaseFirestore
+  //         .collection('loans')
+  //         .doc(document)
+  //         .snapshots()
+  //         .map((snap) => Loan.fromMap(snap.data()));
+  //   } on FirebaseException catch (e) {}
+  // }
 
+  // ignore: missing_return
   Future<Loan> userLoanFuture(String uid) async {
     try {
       var loansData = await _firebaseFirestore
