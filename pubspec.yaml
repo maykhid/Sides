@@ -36,6 +36,7 @@ dependencies:
   cloud_firestore: ^1.0.4
   pie_chart: ^5.0.0
   flutter_paystack: ^1.0.5+1
+  connectivity_plus: ^1.0.1
   # mockito:
 
 dev_dependencies:

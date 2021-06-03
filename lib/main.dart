@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:trove_app/extras/test_snack.dart';
 import 'package:trove_app/screens/acquire_loan_screen.dart';
 import 'package:trove_app/screens/render_screen.dart';
 import 'package:trove_app/services/auth.dart';
@@ -67,10 +72,77 @@ class InitBuilders extends StatelessWidget {
   }
 }
 
-class RootMaterialWidget extends StatelessWidget {
+class RootMaterialWidget extends StatefulWidget {
+  @override
+  _RootMaterialWidgetState createState() => _RootMaterialWidgetState();
+}
+
+class _RootMaterialWidgetState extends State<RootMaterialWidget> {
+  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  final _messangerKey = GlobalKey<ScaffoldMessengerState>();
+
+  @override
+  void initState() {
+    super.initState();
+    initConnectivity();
+
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> initConnectivity() async {
+    ConnectivityResult result;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      return;
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectionStatus = result;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // displays across app nerwork status
+      if (_connectionStatus == ConnectivityResult.none) {
+        _messangerKey.currentState.removeCurrentSnackBar();
+        _messangerKey.currentState.showSnackBar(
+            GlobalSnackBar.showNetworkSnackbar(
+                'Check your internet connection', Colors.red, 50000));
+      } else {
+        _messangerKey.currentState.removeCurrentSnackBar();
+        _messangerKey.currentState.showSnackBar(
+            GlobalSnackBar.showNetworkSnackbar('Online', Colors.blueAccent, 5));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: _messangerKey,
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: 'Poppins',
@@ -80,7 +152,7 @@ class RootMaterialWidget extends StatelessWidget {
       home: RenderScreen(),
       routes: {
         RenderScreen.route: (context) => RenderScreen(),
-        AcquireLoanScreen.route : (context) => AcquireLoanScreen(),
+        AcquireLoanScreen.route: (context) => AcquireLoanScreen(),
       },
       builder: (context, child) {
         return Scaffold(
